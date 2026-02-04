@@ -9,13 +9,31 @@ datasource db {
   provider = "postgresql"
 }
 
-// Example model - replace with your actual models
-model User {
+model UserRole {
   id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
+  name      String   @unique
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  users     User[]
 
+  @@map("user_roles")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash") @db.VarChar(60)
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  patronymic   String?
+  iin          String   @unique @db.VarChar(12)
+  roleId       String   @map("role_id")
+  role         UserRole @relation(fields: [roleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@index([roleId])
   @@map("users")
 }
