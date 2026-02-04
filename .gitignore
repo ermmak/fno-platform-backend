@@ -53,3 +53,6 @@ temp/
 *.tmp
 
 /generated/prisma
+
+# Generated API client (regenerate with npm run openapi:generate)
+/src/openapi/api-client.ts
